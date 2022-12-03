@@ -1,0 +1,103 @@
+#include<bits/stdc++.h>
+using namespace std;
+
+    void Likes(vector<string> tweets){
+
+        vector<string> likes;
+
+        for(int i=0; i<tweets.size(); i++){
+            string word=tweets[i];
+            string likes_ans=" ";
+            for(int j=word.length()-1; j>=0; j--){
+                if(word[j]!='\t')
+                    likes_ans=likes_ans+word[j];
+                else
+                    break;
+            }
+            reverse(likes_ans.begin(), likes_ans.end());
+            likes.push_back(likes_ans);
+        }
+        for(int i=0; i<likes.size(); i++){
+             cout<<likes[i]<<endl;
+        }
+    }
+
+    void Mention(vector<string> tweets){
+        vector<string> mention;
+        int flag=0;
+    
+         for(int i=0; i<tweets.size(); i++){
+            string word=tweets[i];
+            string mention_ans=" ";
+
+            for(int j=1; j<word.length();j++){
+
+                if(word[j]=='@'){
+                    flag=1;
+                    mention_ans=mention_ans+word[j];
+                       
+                    for(int k=j+1; k<word.length();k++){
+                        if(word[k]!='\t' )
+                            mention_ans=mention_ans+word[k];
+                                
+                        else
+                            break;
+                        
+                    }
+
+                }
+
+            }
+
+                
+            cout<<mention_ans<<'\t';
+                
+        }
+
+    }
+
+    void User(vector<string> tweets){
+        vector<string> user;
+
+            for(int i=0; i<tweets.size(); i++){
+                string word=tweets[i];
+                string ans=" ";
+                
+
+                for(int j=0; j<word.length();j++){
+                    
+                    if(word[j]!='\t')
+                    ans=ans+word[j];
+                    else
+                    break;
+                }
+                
+                user.push_back(ans);
+
+            }
+
+            for(int i=0; i<user.size(); i++){
+            cout<<user[i]<<endl;
+         }
+
+    }
+
+    void Solution(vector<string> tweets) {
+        // string user;
+        // string mention;
+        // int likes;
+    
+        User(tweets);
+        Mention(tweets);
+        Likes(tweets);
+        
+        // cout<<"Number of likes are : "<<likes<<endl;
+
+    }
+
+    int main() {
+        vector<string> tweets={"@user1234	Russia-Ukraine Crisis is just never ending @zelenskyy	10","@user3456	Happy birthday to @barack_obama	6"};
+
+        Solution(tweets);
+        return 0;
+    }        
