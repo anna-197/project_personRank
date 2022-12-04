@@ -21,7 +21,7 @@ using namespace std;
         return likes;
     }
 
-    void Mention(vector<string> tweets){
+    vector<string> Mention(vector<string> tweets){
         vector<string> mention;
         
     
@@ -58,7 +58,7 @@ using namespace std;
                     mention_ans=mention_ans+word[k];
                     k++;
                 }
-                cout<<mention_ans<<endl;
+                // cout<<mention_ans<<endl;
                 mention.push_back(mention_ans);
                 mention_ans="";
                 
@@ -71,6 +71,7 @@ using namespace std;
             }
                 
         }
+        return mention;
 
     }
 
@@ -99,6 +100,8 @@ using namespace std;
         //  }
         return user;
     }
+    
+
 
     void Solution(vector<string> tweets) {
         // string user;
@@ -119,13 +122,22 @@ using namespace std;
             }
         }
         
-        map<string, int>::iterator itr;
+       
+        vector<string> mention=Mention(tweets);
+        for(int i=0; i<mention.size(); i++){
+            if(mp.find(mention[i])==mp.end()){
+              mp.insert(make_pair(mention[i],50+(like[i]*5)));
+             }
+            else{
+             mp[mention[i]]=mp[mention[i]]+((like[i]*5)+50);
+            }
+        }
+        
+         map<string, int>::iterator itr;
         for (itr = mp.begin(); itr != mp.end(); ++itr) {
                 cout << '\t' << itr->first << '\t' << itr->second
                 << '\n';
         }
-        Mention(tweets);
-        Likes(tweets);
         
         
         
@@ -133,7 +145,7 @@ using namespace std;
     }
 
     int main() {
-        vector<string> tweets={"@user1234	Russia-Ukraine @ananya Crisis is just never ending @zelenskyy	10","@user2345	Happy birthday to @barack_obama	6"};
+        vector<string> tweets={"@user1234	Russia-Ukraine Crisis is just never ending @zelenskyy	10","@user2345	Happy birthday to @barack_obama	6", "@user6789	@barack_obama wishing you a great year ahead.	1","@zelenskyy	Ukraine needs help and support!	10"};
 
         Solution(tweets);
         return 0;
