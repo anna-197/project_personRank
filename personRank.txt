@@ -1,9 +1,9 @@
 #include<bits/stdc++.h>
 using namespace std;
 
-    void Likes(vector<string> tweets){
+    vector<int> Likes(vector<string> tweets){
 
-        vector<string> likes;
+        vector<int> likes;
 
         for(int i=0; i<tweets.size(); i++){
             string word=tweets[i];
@@ -15,48 +15,66 @@ using namespace std;
                     break;
             }
             reverse(likes_ans.begin(), likes_ans.end());
-            likes.push_back(likes_ans);
+             int intlikes = stoi(likes_ans);
+            likes.push_back(intlikes);
         }
-        for(int i=0; i<likes.size(); i++){
-             cout<<likes[i]<<endl;
-        }
+        return likes;
     }
 
     void Mention(vector<string> tweets){
         vector<string> mention;
-        int flag=0;
+        
     
          for(int i=0; i<tweets.size(); i++){
             string word=tweets[i];
             string mention_ans=" ";
+            // flag to indicate whether iterating over content and not user or likes
+            int flag=0;
 
-            for(int j=1; j<word.length();j++){
-
-                if(word[j]=='@'){
-                    flag=1;
-                    mention_ans=mention_ans+word[j];
-                       
-                    for(int k=j+1; k<word.length();k++){
-                        if(word[k]!='\t' )
-                            mention_ans=mention_ans+word[k];
-                                
-                        else
-                            break;
-                        
-                    }
-
+            for(int j=0; j<word.length();j++){
+                // ensures content not startes and skip over username
+                if(word[j]!='\t' && flag==0){
+                    continue;
                 }
+                
+                // username ended..j now points to tab and inc as long as content not started
+                if(flag==0){
+                    j++;
+                }
+                
+                // start of content
+                flag=1;
+                
+                if(word[j]!='@'){
+                    if(word[j]=='\t' && flag==1){
+                        break;
+                    }
+                    continue;
+                }
+                
+                // otherwise
+                int k=j;
+                while(word[k]!='\t' && word[k]!=' '){
+                    mention_ans=mention_ans+word[k];
+                    k++;
+                }
+                cout<<mention_ans<<endl;
+                mention.push_back(mention_ans);
+                mention_ans="";
+                
+                if(word[k]=='\t'){
+                    flag=0;
+                    break;
+                }
+                j=k;
 
             }
-
-                
-            cout<<mention_ans<<'\t';
                 
         }
 
     }
 
-    void User(vector<string> tweets){
+    vector<string> User(vector<string> tweets){
         vector<string> user;
 
             for(int i=0; i<tweets.size(); i++){
@@ -76,27 +94,46 @@ using namespace std;
 
             }
 
-            for(int i=0; i<user.size(); i++){
-            cout<<user[i]<<endl;
-         }
-
+        //     for(int i=0; i<user.size(); i++){
+        //     cout<<user[i]<<endl;
+        //  }
+        return user;
     }
 
     void Solution(vector<string> tweets) {
         // string user;
         // string mention;
         // int likes;
-    
-        User(tweets);
+        
+        
+        map<string,int> mp;
+        
+        vector<string> user=User(tweets);
+        vector<int> like=Likes(tweets);
+        for(int i=0; i<user.size(); i++){
+            if(mp.find(user[i])==mp.end()){
+              mp.insert(make_pair(user[i],(like[i]*10)));
+             }
+            else{
+             mp[user[i]]=mp[user[i]]+(like[i]*10);
+            }
+        }
+        
+        map<string, int>::iterator itr;
+        for (itr = mp.begin(); itr != mp.end(); ++itr) {
+                cout << '\t' << itr->first << '\t' << itr->second
+                << '\n';
+        }
         Mention(tweets);
         Likes(tweets);
         
-        // cout<<"Number of likes are : "<<likes<<endl;
+        
+        
 
     }
 
     int main() {
-        vector<string> tweets={"@user1234	Russia-Ukraine Crisis is just never ending @zelenskyy	10","@user3456	Happy birthday to @barack_obama	6"};
+        vector<string> tweets={"@user1234	Russia-Ukraine @ananya Crisis is just never ending @zelenskyy	10","@user2345	Happy birthday to @barack_obama	6"};
 
         Solution(tweets);
         return 0;
