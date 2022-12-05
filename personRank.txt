@@ -95,19 +95,18 @@ using namespace std;
 
             }
 
-        //     for(int i=0; i<user.size(); i++){
-        //     cout<<user[i]<<endl;
-        //  }
+        
         return user;
+    }
+    
+    bool sortbysec(const pair<string,int> &a, const pair<string,int> &b){
+        
+            return (a.second < b.second);
     }
     
 
 
     void Solution(vector<string> tweets) {
-        // string user;
-        // string mention;
-        // int likes;
-        
         
         map<string,int> mp;
         
@@ -133,16 +132,39 @@ using namespace std;
             }
         }
         
+        // map with likes
          map<string, int>::iterator itr;
         for (itr = mp.begin(); itr != mp.end(); ++itr) {
-                cout << '\t' << itr->first << '\t' << itr->second
-                << '\n';
+                cout << '\t' << itr->first << '\t' << itr->second<< '\n';
         }
         
         
         
+        vector<pair<string, int> > A;
+
+        // Copy key-value pair from Map
+        // to vector of pairs
+        for (auto& it : mp) {
+            A.push_back(it);
+        }
+        
+        
+        
+        sort(A.begin(), A.end(), sortbysec);
+        
+        
+        
+        vector<pair<string, int>>::iterator ptr;
+        
+         // reverse printing vector
+        //  actual personRank
+        cout<<"Actual personRank"<<endl;
+        for (ptr = A.end()-1; ptr >= A.begin(); ptr--)
+            cout << ptr->first <<endl;
+        
 
     }
+    
 
     int main() {
         vector<string> tweets={"@user1234	Russia-Ukraine Crisis is just never ending @zelenskyy	10","@user2345	Happy birthday to @barack_obama	6", "@user6789	@barack_obama wishing you a great year ahead.	1","@zelenskyy	Ukraine needs help and support!	10"};
