@@ -13,14 +13,14 @@ void read(vector<string> &tweets) {
     } 
 }
 
-vector<int> Likes(vector<string> tweets){
+vector<int> getLikes(vector<string> tweets){
     vector<int> likes;
-    for(int i=0; i<tweets.size(); i++){
-        string word=tweets[i];
-        string likes_ans=" ";
-        for(int j=word.length()-1; j>=0; j--){
-            if(word[j]!='\t')
-                likes_ans=likes_ans+word[j];
+    for(int i = 0; i<tweets.size(); i++){
+        string tweet = tweets[i];
+        string likes_ans = " ";
+        for(int j = tweet.length()-1; j >= 0; j--){
+            if(tweet[j] != '\t')
+                likes_ans = likes_ans+tweet[j];
             else
                 break;
         }
@@ -31,105 +31,105 @@ vector<int> Likes(vector<string> tweets){
     return likes;
 }
 
-vector<string> Mention(vector<string> tweets){
-    vector<string> mention;
-    for(int i=0; i<tweets.size(); i++){
-        string word=tweets[i];
-        string mention_ans=" ";
+vector<string> getMentions(vector<string> tweets){
+    vector<string> mentions;
+    for(int i = 0; i<tweets.size(); i++){
+        string tweet = tweets[i];
+        string mention_ans = " ";
         // flag to check iterating of content only
-        int flag=0;
-        for(int j=0; j<word.length();j++){
+        int flag = 0;
+        for(int j = 0; j<tweet.length();j++){
             // skips user
-            if(word[j]!='\t' && flag==0){
+            if(tweet[j] != '\t' && flag == 0){
                 continue;
             }
             //increment till content starts
-            if(flag==0){
+            if(flag == 0){
                 j++;
             }
             // start of content
-            flag=1;
-            if(word[j]!='@'){
-                if(word[j]=='\t' && flag==1){
+            flag = 1;
+            if(tweet[j] != '@'){
+                if(tweet[j] == '\t' && flag == 1){
                     break;
                 }
                     continue;
             }
             // otherwise
-            int k=j;
-            while(word[k]!='\t' && word[k]!=' '){
-                mention_ans=mention_ans+word[k];
+            int k = j;
+            while(tweet[k] != '\t' && tweet[k] != ' '){
+                mention_ans = mention_ans+tweet[k];
                 k++;
             }
-            mention.push_back(mention_ans);
-            mention_ans="";
+            mentions.push_back(mention_ans);
+            mention_ans = "";
                 
-            if(word[k]=='\t'){
-                flag=0;
+            if(tweet[k] == '\t'){
+                flag = 0;
                 break;
             }
-            j=k;
+            j = k;
         }
     }
-    return mention;
+    return mentions;
 }
 
-vector<string> User(vector<string> tweets){
-    vector<string> user;
-    for(int i=0; i<tweets.size(); i++){
-        string word=tweets[i];
-        string ans=" ";
-        for(int j=0; j<word.length();j++){
-            if(word[j]!='\t')
-                ans=ans+word[j];
+vector<string> getUsername(vector<string> tweets){
+    vector<string> users;
+    for(int i = 0; i<tweets.size(); i++){
+        string tweet = tweets[i];
+        string ans = " ";
+        for(int j = 0; j<tweet.length();j++){
+            if(tweet[j] != '\t')
+                ans = ans+tweet[j];
             else
                 break;
         }
-        user.push_back(ans);
+        users.push_back(ans);
     }
-    return user;
+    return users;
 }
     
-bool sortbysec(const pair<string,int> &a, const pair<string,int> &b){
+bool sortVector(const pair<string,int> &a, const pair<string,int> &b){
     return (a.second < b.second);
 }
     
 void Solution(vector<string> tweets) {
-    map<string,int> mp;
-    vector<string> user=User(tweets);
-    vector<int> like=Likes(tweets);
+    map<string,int> personRankMap;
+    vector<string> users = getUsername(tweets);
+    vector<int> num_of_likes = getLikes(tweets);
     // mapping users to likes
-    for(int i=0; i<user.size(); i++){
-        if(mp.find(user[i])==mp.end()){
-            mp.insert(make_pair(user[i],(like[i]*10)));
+    for(int i = 0; i<users.size(); i++){
+        if(personRankMap.find(users[i]) == personRankMap.end()){
+            personRankMap.insert(make_pair(users[i],(num_of_likes[i]*10)));
         }
         else{
-            mp[user[i]]=mp[user[i]]+(like[i]*10);
+            personRankMap[users[i]] = personRankMap[users[i]]+(num_of_likes[i]*10);
         }
     }
-    vector<string> mention=Mention(tweets);
+    vector<string> mentions = getMentions(tweets);
     // mapping mentions to likes
-    for(int i=0; i<mention.size(); i++){
-        if(mp.find(mention[i])==mp.end()){
-            mp.insert(make_pair(mention[i],50+(like[i]*5)));
+    for(int i = 0; i<mentions.size(); i++){
+        if(personRankMap.find(mentions[i]) == personRankMap.end()){
+            personRankMap.insert(make_pair(mentions[i],50+(num_of_likes[i]*5)));
         }
         else{
-            mp[mention[i]]=mp[mention[i]]+((like[i]*5)+50);
+            personRankMap[mentions[i]] = personRankMap[mentions[i]]+((num_of_likes[i]*5)+50);
         }
     }
-    vector<pair<string, int> > A;
+    vector<pair<string, int> > personRankMapVector;
     // Copy key-value pair from Map
     // to vector of pairs
-    for (auto& it : mp) {
-        A.push_back(it);
+    for (auto& it : personRankMap) {
+        personRankMapVector.push_back(it);
     }
     // sort vector
-    sort(A.begin(), A.end(), sortbysec);
+    sort(personRankMapVector.begin(), personRankMapVector.end(), sortVector);
     vector<pair<string, int>>::iterator ptr;
     //reverse printing vector
     //actual personRank
-    cout<<"Actual personRank"<<endl;
-    for (ptr = A.end()-1; ptr >= A.begin(); ptr--)
+    cout<<"personRankMapVectorctual personRank"<<endl;
+    for (ptr = personRankMapVector.end()-1; ptr >= personRankMapVector.begin(); ptr--)
         cout << ptr->first <<endl;
 }
     
